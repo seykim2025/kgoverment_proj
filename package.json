@@ -1,0 +1,41 @@
+{
+  "name": "k_govermentproj",
+  "version": "1.0.0",
+  "description": "정부과제 수행 가능성 판단 서비스",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "government",
+    "assessment"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "lucide-react": "^0.563.0",
+    "next": "^16.1.6",
+    "openai": "^6.19.0",
+    "pdf-parse": "^2.4.5",
+    "prisma": "^7.3.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.2.2",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.24",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.6",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
+  }
+}
