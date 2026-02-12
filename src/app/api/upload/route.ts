@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parsePDF } from '@/lib/pdfParser';
+
+export const dynamic = 'force-dynamic';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Upload error:', error);
     console.error('Upload error stack:', error instanceof Error ? error.stack : 'no stack');
-    
+
     // 에러 타입에 따른 메시지
     let message = '파일 처리 중 오류가 발생했습니다';
     if (error instanceof Error) {
@@ -87,7 +89,7 @@ export async function POST(request: NextRequest) {
 }
 
 // 업로드 가능한 파일 타입 확인용 GET 엔드포인트
-export async function GET() {
+export async function GET(_request: NextRequest) {
   return NextResponse.json({
     allowedTypes: ['application/pdf'],
     maxSize: MAX_FILE_SIZE,

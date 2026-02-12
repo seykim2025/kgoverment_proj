@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { assess } from '@/lib/ai/assessor';
+
+export const dynamic = 'force-dynamic';
 import { z } from 'zod';
 
 const assessmentRequestSchema = z.object({
@@ -27,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    
+
     // 요청 검증
     const result = assessmentRequestSchema.safeParse(body);
     if (!result.success) {
@@ -87,8 +89,8 @@ export async function POST(request: NextRequest) {
         pdfPath: pdfPath || null,
         eligibilityStatus: aiResult.eligibility_check.status,
         eligibilityFailReason: aiResult.eligibility_check.fail_reason || null,
-        quantitativeScore: aiResult.quantitative_score_prediction.estimated_score 
-          ? parseFloat(aiResult.quantitative_score_prediction.estimated_score) || null 
+        quantitativeScore: aiResult.quantitative_score_prediction.estimated_score
+          ? parseFloat(aiResult.quantitative_score_prediction.estimated_score) || null
           : null,
         quantitativeStrengths: JSON.stringify(aiResult.quantitative_score_prediction.strength),
         quantitativeWeaknesses: JSON.stringify(aiResult.quantitative_score_prediction.weakness),
@@ -119,10 +121,10 @@ export async function POST(request: NextRequest) {
 }
 
 // GET: 판단 이력 조회
-export async function GET() {
+export async function GET(_request: NextRequest) {
   try {
     const company = await prisma.company.findFirst();
-    
+
     if (!company) {
       return NextResponse.json({ assessments: [] });
     }

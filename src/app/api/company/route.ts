@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { companySchema } from '@/lib/schemas/company';
 
+export const dynamic = 'force-dynamic';
+
 // GET: 회사 정보 조회 (단일 회사)
-export async function GET() {
+export async function GET(_request: NextRequest) {
   try {
     const company = await prisma.company.findFirst({
       include: {
@@ -33,7 +35,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Zod 유효성 검사
     const result = companySchema.safeParse(body);
     if (!result.success) {

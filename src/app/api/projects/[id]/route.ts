@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { projectSchema } from '@/lib/schemas/project';
 
+export const dynamic = 'force-dynamic';
+
 // GET: 특정 과제 상세 조회
 export async function GET(
   _request: NextRequest,
@@ -9,7 +11,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    
+
     const project = await prisma.projectHistory.findUnique({
       where: { id },
     });

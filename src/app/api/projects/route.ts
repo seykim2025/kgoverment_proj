@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { projectSchema } from '@/lib/schemas/project';
 
+export const dynamic = 'force-dynamic';
+
 // GET: 모든 과제 이력 조회
-export async function GET() {
+export async function GET(_request: NextRequest) {
   try {
     const company = await prisma.company.findFirst();
-    
+
     if (!company) {
       return NextResponse.json(
         { error: '먼저 회사 정보를 등록하세요' },
@@ -33,7 +35,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const company = await prisma.company.findFirst();
-    
+
     if (!company) {
       return NextResponse.json(
         { error: '먼저 회사 정보를 등록하세요' },
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    
+
     // Zod 유효성 검사
     const result = projectSchema.safeParse(body);
     if (!result.success) {
