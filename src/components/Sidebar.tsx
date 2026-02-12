@@ -10,9 +10,11 @@ import {
   FolderClock,
   Menu,
   X,
+  Home,
 } from 'lucide-react';
 
 const navItems = [
+  { href: '/', label: '홈', icon: Home },
   { href: '/dashboard', label: '대시보드', icon: LayoutDashboard },
   { href: '/assess', label: '과제 판단', icon: FileSearch },
   { href: '/company', label: '회사 정보', icon: Building2 },
@@ -43,19 +45,20 @@ export default function Sidebar() {
   const toggle = useCallback(() => setOpen(p => !p), []);
 
   const isActive = (href: string) => {
-    if (href === '/dashboard') return pathname === '/dashboard' || pathname === '/';
+    if (href === '/') return pathname === '/' || pathname === '/dashboard';
+    if (href === '/dashboard' && pathname === '/') return true;
     return pathname.startsWith(href);
   };
 
   const nav = (
     <>
       {/* Logo */}
-      <div className="h-16 flex items-center gap-2.5 px-5 border-b border-[var(--gray-200)]">
-        <div className="w-8 h-8 rounded-lg bg-[var(--blue-500)] flex items-center justify-center">
+      <Link href="/" className="h-16 flex items-center gap-2.5 px-5 border-b border-[var(--gray-200)] hover:bg-[var(--gray-50)] transition-colors group">
+        <div className="w-8 h-8 rounded-lg bg-[var(--blue-500)] flex items-center justify-center group-hover:scale-105 transition-transform">
           <FileSearch className="w-4.5 h-4.5 text-white" />
         </div>
         <span className="font-bold text-[15px] text-[var(--gray-900)]">과제판단</span>
-      </div>
+      </Link>
 
       {/* Nav */}
       <nav className="flex-1 py-3 px-3 space-y-1">
