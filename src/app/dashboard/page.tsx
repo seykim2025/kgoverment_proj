@@ -128,7 +128,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="px-8 py-8 md:px-14 md:py-12 lg:px-20 lg:py-14 max-w-[1600px] mx-auto transition-all duration-300" style={{ paddingLeft: '120px' }}>
+    <div className="px-6 py-8 md:px-10 md:py-10 lg:px-14 lg:py-12 max-w-7xl mx-auto transition-all duration-300">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
@@ -169,7 +169,7 @@ export default function DashboardPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {/* Total */}
-            <div className="card p-5">
+            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-blue-100/50">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--blue-50)' }}>
                   <BarChart3 className="w-5 h-5" style={{ color: 'var(--blue-500)' }} />
@@ -181,7 +181,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Green */}
-            <div className="card p-5">
+            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-green-100/50">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--green-50)' }}>
                   <CheckCircle2 className="w-5 h-5" style={{ color: 'var(--green-500)' }} />
@@ -193,7 +193,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Yellow */}
-            <div className="card p-5">
+            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-amber-100/50">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--amber-50)' }}>
                   <AlertCircle className="w-5 h-5" style={{ color: 'var(--amber-500)' }} />
@@ -205,7 +205,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Red */}
-            <div className="card p-5">
+            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-red-100/50">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--red-50)' }}>
                   <XCircle className="w-5 h-5" style={{ color: 'var(--red-500)' }} />
