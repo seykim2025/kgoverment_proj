@@ -23,7 +23,7 @@ export default function Navigation() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  
+
   // Only the home page has a dark hero — use transparent nav there
   const isHomePage = pathname === '/';
 
@@ -105,33 +105,33 @@ export default function Navigation() {
                       relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
                       transition-all duration-200 group overflow-hidden
                       ${active
-                        ? 'text-blue-600 bg-blue-50'
+                        ? 'text-primary-600 bg-primary-50'
                         : (isScrolled || !isHomePage)
-                          ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                          : 'text-slate-100 hover:text-white hover:bg-white/10 font-medium'
+                          ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          : 'text-gray-100 hover:text-white hover:bg-white/10 font-medium'
                       }
                     `}
                     aria-current={active ? 'page' : undefined}
                   >
-                    <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${active ? 'text-blue-500' : 'opacity-70 group-hover:opacity-100'
+                    <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${active ? 'text-primary-500' : 'opacity-70 group-hover:opacity-100'
                       }`} />
                     {item.label}
                     {active && (
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 rounded-full" />
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 rounded-full" />
                     )}
                   </Link>
                 );
               })}
 
-              <div className="w-px h-4 bg-slate-200 mx-2" />
+              <div className="w-px h-4 bg-gray-200 mx-2" />
 
               <Link
                 href="/login"
                 className={`
-                  ml-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5
+                  ml-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-toss-md hover:shadow-toss-lg hover:-translate-y-0.5
                   ${(isScrolled || !isHomePage)
-                    ? 'bg-slate-900 text-white hover:bg-slate-800'
-                    : 'bg-white text-slate-900 hover:bg-slate-50'
+                    ? 'bg-gray-900 text-white hover:bg-gray-800'
+                    : 'bg-white text-gray-900 hover:bg-gray-50'
                   }
                 `}
               >

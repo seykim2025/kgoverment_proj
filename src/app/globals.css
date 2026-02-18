@@ -11,15 +11,23 @@
    TOSS-STYLE DESIGN SYSTEM
    ================================ */
 :root {
-  /* Blue (Primary) */
+  /* Layout */
+  --sidebar-width: 256px;
+  --mobile-header-height: 56px;
+
+  /* Shadows (Legacy support mapped to new tokens) */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Mapping for legacy raw usage (Will be gradually replaced by Tailwind classes) */
   --blue-50: #EFF6FF;
   --blue-100: #DBEAFE;
-  --blue-200: #BFDBFE;
   --blue-500: #3182F6;
   --blue-600: #1B64DA;
   --blue-700: #1957C2;
 
-  /* Gray */
   --gray-50: #F7F8FA;
   --gray-100: #F2F3F6;
   --gray-200: #EAEBEE;
@@ -31,36 +39,23 @@
   --gray-800: #333D4B;
   --gray-900: #191F28;
 
-  /* Red */
   --red-50: #FFF0F0;
   --red-100: #FFE0E0;
   --red-500: #F04452;
   --red-600: #E02020;
   --red-700: #C41C1C;
 
-  /* Green */
   --green-50: #E8F5E9;
   --green-100: #C8E6C9;
   --green-500: #30B566;
   --green-600: #27A05A;
   --green-700: #1E8E4E;
 
-  /* Amber */
   --amber-50: #FFF8E1;
   --amber-100: #FFECB3;
   --amber-500: #F59E0B;
   --amber-600: #D97706;
   --amber-700: #B45309;
-
-  /* Layout */
-  --sidebar-width: 256px;
-  --mobile-header-height: 56px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
-  --shadow-lg: 0 4px 12px 0 rgb(0 0 0 / 0.08);
-  --shadow-xl: 0 8px 24px 0 rgb(0 0 0 / 0.12);
 }
 
 /* ================================

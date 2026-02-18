@@ -3,18 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FileUpload from "@/components/FileUpload";
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  Sparkles, 
-  FileText, 
-  Clock, 
-  Loader2, 
-  CheckCircle2, 
-  XCircle, 
-  AlertCircle,
-  ArrowRight,
-  TrendingUp
+import {
+  ChevronDown,
+  Sparkles,
+  FileText,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  AlertCircle
 } from "lucide-react";
 
 interface ParsedDocument {
@@ -35,12 +31,7 @@ interface UploadResult {
   parsed: ParsedDocument;
 }
 
-interface RecentUpload {
-  id: string;
-  fileName: string;
-  uploadedAt: Date;
-  numPages: number;
-}
+
 
 interface AssessmentResult {
   eligibility_check: {
@@ -63,36 +54,39 @@ interface AssessmentResult {
   };
 }
 
+// ... (interfaces remain the same)
+
 export default function AssessPage() {
   const router = useRouter();
   const [uploadedDocument, setUploadedDocument] = useState<UploadResult | null>(null);
-  const [isTextExpanded, setIsTextExpanded] = useState(false);
-  const [recentUploads, setRecentUploads] = useState<RecentUpload[]>([]);
-  const [analyzing, setAnalyzing] = useState(false);
+
+
+  // Analysis State
+  const [analysisStatus, setAnalysisStatus] = useState<'idle' | 'parsing' | 'analyzing' | 'scoring' | 'complete'>('idle');
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [manualTitle, setManualTitle] = useState('');
   const [manualContent, setManualContent] = useState('');
+
+  // Accordion State for Result
+  const [openQualitative, setOpenQualitative] = useState(true);
 
   const handleUploadComplete = (uploadResult: UploadResult) => {
     setUploadedDocument(uploadResult);
     setResult(null);
     setError(null);
-    
-    const newUpload: RecentUpload = {
-      id: Date.now().toString(),
-      fileName: uploadResult.fileName,
-      uploadedAt: new Date(),
-      numPages: uploadResult.parsed.numPages,
-    };
-    setRecentUploads(prev => [newUpload, ...prev].slice(0, 5));
+    setAnalysisStatus('idle');
   };
 
   const handleAnalyze = async (useManual: boolean = false) => {
-    setAnalyzing(true);
+    setAnalysisStatus('parsing');
     setError(null);
     setResult(null);
+
+    // Simulate progress steps for better UX
+    const timer1 = setTimeout(() => setAnalysisStatus('analyzing'), 1500);
+    const timer2 = setTimeout(() => setAnalysisStatus('scoring'), 3500);
 
     try {
       const noticeTitle = useManual ? manualTitle : (uploadedDocument?.parsed.info.title || uploadedDocument?.fileName || '공고문');
@@ -116,335 +110,244 @@ export default function AssessPage() {
       }
 
       setResult(data.assessment);
+      setAnalysisStatus('complete');
     } catch (err) {
+      setAnalysisStatus('idle');
       setError(err instanceof Error ? err.message : 'AI 분석 중 오류가 발생했습니다');
     } finally {
-      setAnalyzing(false);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
     }
   };
 
-  const getTextPreview = (text: string, maxLength: number = 500): string => {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + '...';
-  };
+
 
   const getTrafficLightStyles = (light: string) => {
     switch (light) {
-      case 'GREEN': return { color: 'var(--green-500)', bg: 'var(--green-50)', icon: CheckCircle2, label: '지원 추천' };
-      case 'YELLOW': return { color: 'var(--amber-500)', bg: 'var(--amber-50)', icon: AlertCircle, label: '보완 필요' };
-      case 'RED': return { color: 'var(--red-500)', bg: 'var(--red-50)', icon: XCircle, label: '지원 불가' };
-      default: return { color: 'var(--gray-500)', bg: 'var(--gray-100)', icon: AlertCircle, label: '알 수 없음' };
+      case 'GREEN': return { color: 'text-success-700', bg: 'bg-success-50', border: 'border-success-100', icon: CheckCircle2, label: '지원 추천' };
+      case 'YELLOW': return { color: 'text-warning-700', bg: 'bg-warning-50', border: 'border-warning-100', icon: AlertCircle, label: '보완 필요' };
+      case 'RED': return { color: 'text-danger-700', bg: 'bg-danger-50', border: 'border-danger-100', icon: XCircle, label: '지원 불가' };
+      default: return { color: 'text-gray-700', bg: 'bg-gray-50', border: 'border-gray-200', icon: AlertCircle, label: '알 수 없음' };
     }
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto">
+    <div className="p-6 md:p-10 max-w-5xl mx-auto space-y-10">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-[22px] font-bold" style={{ color: 'var(--gray-900)' }}>
-          과제 판단
-        </h1>
-        <p className="text-[14px] mt-1" style={{ color: 'var(--gray-600)' }}>
-          정부과제 공고문을 업로드하거나 입력하면 AI가 수행 가능성을 분석합니다.
-        </p>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">과제 판단</h1>
+        <p className="text-gray-600 mt-2">정부과제 공고문을 분석하여 지원 적합성을 판단합니다.</p>
       </div>
 
-      <div className="space-y-5">
-        {/* PDF Upload */}
-        <div className="card p-6">
-          <h3 className="text-[15px] font-semibold mb-1.5 flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-            <FileText className="w-4 h-4" style={{ color: 'var(--blue-500)' }} />
-            과제공고 PDF 업로드
-          </h3>
-          <p className="text-[13px] mb-5" style={{ color: 'var(--gray-600)' }}>
-            정부과제 공고 PDF 파일을 업로드하면 자동으로 텍스트를 추출하여 분석합니다.
-          </p>
-          
-          <FileUpload 
-            onUploadComplete={handleUploadComplete}
-            onError={(uploadError) => setError(uploadError)}
-          />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {/* Left Column: Input */}
+        <div className="space-y-6">
+          <div className="card p-6 shadow-toss-sm border border-gray-100">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-900">
+              <FileText className="w-5 h-5 text-primary-500" />
+              공고문 업로드
+            </h3>
+            <FileUpload
+              onUploadComplete={handleUploadComplete}
+              onError={(uploadError) => setError(uploadError)}
+            />
+          </div>
+
+          {/* Manual Input Toggle (Simplified) */}
+          <div className="card p-6 shadow-toss-sm border border-gray-100">
+            <details className="group">
+              <summary className="flex items-center justify-between cursor-pointer list-none">
+                <h3 className="text-base font-semibold text-gray-900">직접 입력하기</h3>
+                <ChevronDown className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="mt-4 space-y-4 pt-4 border-t border-gray-100">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">과제명</label>
+                  <input
+                    type="text"
+                    value={manualTitle}
+                    onChange={(e) => setManualTitle(e.target.value)}
+                    placeholder="예: 2024년도 AI 바우처 지원사업"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">공고문 내용</label>
+                  <textarea
+                    value={manualContent}
+                    onChange={(e) => setManualContent(e.target.value)}
+                    placeholder="공고문 내용을 여기에 붙여넣으세요..."
+                    rows={6}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all resize-none"
+                  />
+                </div>
+                <button
+                  onClick={() => handleAnalyze(true)}
+                  disabled={analysisStatus !== 'idle' || !manualContent}
+                  className="w-full btn btn-primary py-3"
+                >
+                  분석 시작
+                </button>
+              </div>
+            </details>
+          </div>
         </div>
 
-        {/* Parsed Text Preview */}
-        {uploadedDocument && (
-          <div className="card p-6 animate-fade-in-up">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-[15px] font-semibold flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-                <FileText className="w-4 h-4" style={{ color: 'var(--green-500)' }} />
-                추출된 텍스트 미리보기
-              </h3>
+        {/* Right Column: Status & Result */}
+        <div className="space-y-6">
+          {/* 1. Initial State / Text Preview */}
+          {uploadedDocument && analysisStatus === 'idle' && !result && (
+            <div className="card p-6 shadow-toss-sm border border-gray-100 animate-fade-in-up">
+              <h3 className="text-lg font-bold mb-4 text-gray-900">문서 확인</h3>
+              <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+                <p className="text-sm text-gray-600 leading-relaxed line-clamp-6">
+                  {uploadedDocument.parsed.text}
+                </p>
+              </div>
               <button
-                onClick={() => setIsTextExpanded(!isTextExpanded)}
-                className="flex items-center gap-1 text-[13px] font-medium transition-colors"
-                style={{ color: 'var(--blue-500)' }}
+                onClick={() => handleAnalyze(false)}
+                className="w-full btn btn-primary py-3 text-lg shadow-toss-md hover:shadow-toss-lg hover:-translate-y-0.5 transition-all"
               >
-                {isTextExpanded ? (
-                  <>접기 <ChevronUp className="w-4 h-4" /></>
-                ) : (
-                  <>펼치기 <ChevronDown className="w-4 h-4" /></>
-                )}
+                <Sparkles className="w-5 h-5 mr-2" />
+                AI 분석 시작하기
               </button>
             </div>
+          )}
 
-            <div 
-              className={`rounded-xl p-4 overflow-auto transition-all duration-300 ${
-                isTextExpanded ? 'max-h-[600px]' : 'max-h-[200px]'
-              }`}
-              style={{ backgroundColor: 'var(--gray-50)' }}
-            >
-              <pre className="text-[13px] whitespace-pre-wrap font-[inherit] leading-relaxed" style={{ color: 'var(--gray-700)' }}>
-                {isTextExpanded 
-                  ? uploadedDocument.parsed.text 
-                  : getTextPreview(uploadedDocument.parsed.text)
-                }
-              </pre>
+          {/* 2. Analysis Stepper */}
+          {analysisStatus !== 'idle' && analysisStatus !== 'complete' && (
+            <div className="card p-8 shadow-toss-medium border border-gray-100 text-center animate-fade-in">
+              <Loader2 className="w-10 h-10 animate-spin text-primary-500 mx-auto mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">AI가 공고문을 분석하고 있어요</h3>
+              <p className="text-gray-500 mb-8">잠시만 기다려주세요 (약 10~20초 소요)</p>
+
+              <div className="max-w-xs mx-auto space-y-4">
+                {/* Step 1 */}
+                <div className={`flex items-center gap-3 transition-colors ${['parsing', 'analyzing', 'scoring'].includes(analysisStatus) ? 'text-primary-600' : 'text-gray-300'}`}>
+                  <div className={`w-2.5 h-2.5 rounded-full ${['parsing', 'analyzing', 'scoring'].includes(analysisStatus) ? 'bg-primary-500' : 'bg-gray-200'}`} />
+                  <span className="font-medium text-sm">텍스트 구조화 및 파싱</span>
+                </div>
+                {/* Step 2 */}
+                <div className={`flex items-center gap-3 transition-colors ${['analyzing', 'scoring'].includes(analysisStatus) ? 'text-primary-600' : 'text-gray-300'}`}>
+                  <div className={`w-2.5 h-2.5 rounded-full ${['analyzing', 'scoring'].includes(analysisStatus) ? 'bg-primary-500' : 'bg-gray-200'}`} />
+                  <span className="font-medium text-sm">핵심 요건 추출 및 매칭</span>
+                </div>
+                {/* Step 3 */}
+                <div className={`flex items-center gap-3 transition-colors ${['scoring'].includes(analysisStatus) ? 'text-primary-600' : 'text-gray-300'}`}>
+                  <div className={`w-2.5 h-2.5 rounded-full ${['scoring'].includes(analysisStatus) ? 'bg-primary-500' : 'bg-gray-200'}`} />
+                  <span className="font-medium text-sm">적합성 점수 산출</span>
+                </div>
+              </div>
             </div>
+          )}
 
-            <div className="mt-4 flex justify-between items-center text-[13px]" style={{ color: 'var(--gray-500)' }}>
-              <span>총 {uploadedDocument.parsed.text.length.toLocaleString()}자</span>
-              <span>{uploadedDocument.parsed.numPages}페이지</span>
+          {/* 3. Error State */}
+          {error && (
+            <div className="card p-6 bg-danger-50 border border-danger-100 text-danger-900">
+              <div className="flex items-start gap-3">
+                <XCircle className="w-6 h-6 text-danger-600 flex-shrink-0" />
+                <div>
+                  <h3 className="font-bold text-lg mb-1">분석 실패</h3>
+                  <p className="text-danger-700">{error}</p>
+                </div>
+              </div>
             </div>
+          )}
 
-            <button
-              onClick={() => handleAnalyze(false)}
-              disabled={analyzing}
-              className="mt-5 w-full btn btn-primary btn-lg"
-            >
-              {analyzing ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  AI 분석 중...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5" />
-                  AI 분석 시작
-                </>
-              )}
-            </button>
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="rounded-xl p-4 flex items-start gap-3 animate-fade-in" style={{ backgroundColor: 'var(--red-50)', border: '1px solid var(--red-100)' }}>
-            <XCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--red-500)' }} />
-            <div>
-              <h4 className="text-[14px] font-medium" style={{ color: 'var(--red-700)' }}>오류 발생</h4>
-              <p className="text-[13px] mt-1" style={{ color: 'var(--red-600)' }}>{error}</p>
-            </div>
-          </div>
-        )}
-
-        {/* AI Result */}
-        {result && (
-          <div className="card overflow-hidden animate-fade-in-up">
-            {/* Traffic Light Header */}
-            {(() => {
-              const styles = getTrafficLightStyles(result.final_verdict.traffic_light);
-              const Icon = styles.icon;
-              return (
-                <div className="p-6 text-white" style={{ backgroundColor: styles.color }}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                      <Icon className="w-8 h-8" />
+          {/* 4. Result View */}
+          {result && (
+            <div className="space-y-6 animate-fade-in-up">
+              {/* Verdict Card */}
+              {(() => {
+                const styles = getTrafficLightStyles(result.final_verdict.traffic_light);
+                const Icon = styles.icon;
+                return (
+                  <div className={`card p-6 border ${styles.border} ${styles.bg}`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-white border ${styles.border} ${styles.color}`}>
+                        <Icon className="w-4 h-4" />
+                        {styles.label}
+                      </span>
                     </div>
-                    <div>
-                      <h3 className="text-[22px] font-bold">{styles.label}</h3>
-                      <p className="text-white/90 mt-1 text-[14px]">{result.final_verdict.summary}</p>
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <h3 className={`text-2xl font-bold mb-2 ${styles.color}`}>종합 판정 결과</h3>
+                        <p className="text-gray-800 font-medium leading-relaxed">
+                          {result.final_verdict.summary}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })()}
+                );
+              })()}
 
-            <div className="p-6 space-y-6">
-              {/* Eligibility */}
-              <div>
-                <h4 className="text-[14px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-                  <span className="w-2 h-2 rounded-full" style={{
-                    backgroundColor: result.eligibility_check.status === 'PASS' ? 'var(--green-500)' : 
-                      result.eligibility_check.status === 'FAIL' ? 'var(--red-500)' : 'var(--amber-500)'
-                  }} />
-                  적격성 필터링
-                </h4>
-                <div className="p-4 rounded-xl" style={{
-                  backgroundColor: result.eligibility_check.status === 'PASS' ? 'var(--green-50)' : 
-                    result.eligibility_check.status === 'FAIL' ? 'var(--red-50)' : 'var(--amber-50)',
-                  border: `1px solid ${result.eligibility_check.status === 'PASS' ? 'var(--green-100)' :
-                    result.eligibility_check.status === 'FAIL' ? 'var(--red-100)' : 'var(--amber-100)'}`
-                }}>
-                  <span className="inline-flex items-center gap-1.5 text-[14px] font-semibold" style={{
-                    color: result.eligibility_check.status === 'PASS' ? 'var(--green-700)' :
-                      result.eligibility_check.status === 'FAIL' ? 'var(--red-700)' : 'var(--amber-700)'
-                  }}>
-                    {result.eligibility_check.status === 'PASS' && <CheckCircle2 className="w-4 h-4" />}
-                    {result.eligibility_check.status === 'FAIL' && <XCircle className="w-4 h-4" />}
-                    {result.eligibility_check.status === 'CONDITIONAL' && <AlertCircle className="w-4 h-4" />}
-                    {result.eligibility_check.status === 'PASS' ? '적격' : 
-                     result.eligibility_check.status === 'FAIL' ? '부적격' : '조건부 적격'}
-                  </span>
-                  {result.eligibility_check.fail_reason && (
-                    <p className="text-[13px] mt-2" style={{ color: 'var(--gray-700)' }}>{result.eligibility_check.fail_reason}</p>
+              {/* Detail Cards */}
+              <div className="card shadow-toss-sm border border-gray-100 overflow-hidden">
+                {/* Eligibility */}
+                <div className="p-6 border-b border-gray-100">
+                  <h4 className="font-bold text-gray-900 mb-3">1. 자격 요건 검토</h4>
+                  <div className={`rounded-xl p-4 border ${result.eligibility_check.status === 'PASS' ? 'bg-success-50 border-success-100 text-success-800' :
+                    result.eligibility_check.status === 'FAIL' ? 'bg-danger-50 border-danger-100 text-danger-800' : 'bg-warning-50 border-warning-100 text-warning-800'
+                    }`}>
+                    <div className="flex items-center gap-2 font-bold mb-1">
+                      {result.eligibility_check.status === 'PASS' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                      {result.eligibility_check.status === 'PASS' ? '적격 (PASS)' : result.eligibility_check.status === 'FAIL' ? '부적격 (FAIL)' : '검토 필요'}
+                    </div>
+                    {result.eligibility_check.fail_reason && (
+                      <p className="pl-7 text-sm opacity-90">{result.eligibility_check.fail_reason}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Qualitative Score */}
+                <div className="p-6">
+                  <button
+                    onClick={() => setOpenQualitative(!openQualitative)}
+                    className="w-full flex items-center justify-between group"
+                  >
+                    <h4 className="font-bold text-gray-900">2. 기술 적합성 분석</h4>
+                    <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${openQualitative ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {openQualitative && (
+                    <div className="mt-4 animate-fade-in">
+                      <div className="flex items-end gap-2 mb-4">
+                        <span className="text-4xl font-bold text-primary-600">{result.qualitative_fit_analysis.relevance_score}</span>
+                        <span className="text-lg text-gray-500 mb-1">/ 100점</span>
+                      </div>
+
+                      <div className="w-full h-3 rounded-full bg-gray-100 overflow-hidden mb-5">
+                        <div className="h-full bg-primary-500 rounded-full transition-all duration-1000" style={{ width: `${result.qualitative_fit_analysis.relevance_score}%` }} />
+                      </div>
+
+                      <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                        <p className="text-gray-700 leading-relaxed text-sm">
+                          {result.qualitative_fit_analysis.reasoning}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {result.qualitative_fit_analysis.key_matching_keywords.map((kw, i) => (
+                          <span key={i} className="px-3 py-1 rounded-full text-xs font-semibold bg-primary-50 text-primary-600 border border-primary-100">
+                            #{kw}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
 
-              {/* Quantitative */}
-              <div>
-                <h4 className="text-[14px] font-semibold mb-3" style={{ color: 'var(--gray-900)' }}>정량적 역량 평가</h4>
-                {result.quantitative_score_prediction.estimated_score && (
-                  <p className="text-[16px] font-semibold mb-4" style={{ color: 'var(--blue-500)' }}>
-                    예상 점수: {result.quantitative_score_prediction.estimated_score}
-                  </p>
-                )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--green-50)', border: '1px solid var(--green-100)' }}>
-                    <h5 className="text-[13px] font-semibold mb-3 flex items-center gap-1.5" style={{ color: 'var(--green-700)' }}>
-                      <TrendingUp className="w-4 h-4" />
-                      강점
-                    </h5>
-                    <ul className="text-[13px] space-y-2" style={{ color: 'var(--green-700)' }}>
-                      {result.quantitative_score_prediction.strength.map((s, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                          {s}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--red-50)', border: '1px solid var(--red-100)' }}>
-                    <h5 className="text-[13px] font-semibold mb-3 flex items-center gap-1.5" style={{ color: 'var(--red-700)' }}>
-                      <AlertCircle className="w-4 h-4" />
-                      약점
-                    </h5>
-                    <ul className="text-[13px] space-y-2" style={{ color: 'var(--red-700)' }}>
-                      {result.quantitative_score_prediction.weakness.map((w, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                          {w}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Qualitative */}
-              <div>
-                <h4 className="text-[14px] font-semibold mb-3" style={{ color: 'var(--gray-900)' }}>정성적 기술 적합성</h4>
-                <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--blue-50)', border: '1px solid var(--blue-100)' }}>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-[26px] font-bold" style={{ color: 'var(--blue-500)' }}>
-                      {result.qualitative_fit_analysis.relevance_score}점
-                    </div>
-                    <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--blue-100)' }}>
-                      <div className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${result.qualitative_fit_analysis.relevance_score}%`, backgroundColor: 'var(--blue-500)' }} />
-                    </div>
-                  </div>
-                  <p className="text-[13px] mb-4" style={{ color: 'var(--gray-700)' }}>{result.qualitative_fit_analysis.reasoning}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {result.qualitative_fit_analysis.key_matching_keywords.map((kw, i) => (
-                      <span key={i} className="px-2.5 py-1 rounded-full text-[12px] font-medium"
-                        style={{ backgroundColor: 'var(--blue-100)', color: 'var(--blue-700)' }}>
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Go to Dashboard */}
+              {/* Action */}
               <button
                 onClick={() => router.push('/dashboard')}
-                className="w-full btn btn-secondary btn-lg"
+                className="w-full btn btn-white border border-gray-200 text-gray-700 hover:bg-gray-50 py-3"
               >
-                대시보드에서 전체 이력 보기
-                <ArrowRight className="w-4 h-4" />
+                대시보드로 돌아가기
               </button>
             </div>
-          </div>
-        )}
-
-        {/* Manual Input */}
-        <div className="card p-6">
-          <h3 className="text-[15px] font-semibold mb-1.5" style={{ color: 'var(--gray-900)' }}>
-            수동 입력 (선택사항)
-          </h3>
-          <p className="text-[13px] mb-5" style={{ color: 'var(--gray-600)' }}>
-            PDF 업로드 대신 직접 과제 정보를 입력할 수도 있습니다.
-          </p>
-
-          <div className="space-y-4">
-            <div>
-              <label className="label">과제명</label>
-              <input
-                type="text"
-                value={manualTitle}
-                onChange={(e) => setManualTitle(e.target.value)}
-                placeholder="과제명을 입력하세요"
-                className="input"
-              />
-            </div>
-
-            <div>
-              <label className="label">과제 내용 / 공고문 전문</label>
-              <textarea
-                value={manualContent}
-                onChange={(e) => setManualContent(e.target.value)}
-                placeholder="과제 내용이나 공고문 전문을 입력하세요..."
-                rows={8}
-                className="input resize-none"
-              />
-            </div>
-
-            <button
-              onClick={() => handleAnalyze(true)}
-              disabled={analyzing || !manualContent}
-              className="w-full btn btn-secondary btn-lg"
-            >
-              {analyzing ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  AI 분석 중...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5" />
-                  수동 입력으로 분석
-                </>
-              )}
-            </button>
-          </div>
+          )}
         </div>
-
-        {/* Recent Uploads */}
-        {recentUploads.length > 0 && (
-          <div className="card p-6">
-            <h3 className="text-[15px] font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-              <Clock className="w-4 h-4" style={{ color: 'var(--gray-500)' }} />
-              최근 업로드된 공고문
-            </h3>
-            <ul className="divide-y" style={{ borderColor: 'var(--gray-100)' }}>
-              {recentUploads.map((upload) => (
-                <li 
-                  key={upload.id}
-                  className="py-3 flex justify-between items-center px-3 -mx-3 rounded-lg transition-colors hover:bg-[var(--gray-50)]"
-                >
-                  <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4" style={{ color: 'var(--gray-400)' }} />
-                    <span className="text-[14px] font-medium" style={{ color: 'var(--gray-800)' }}>{upload.fileName}</span>
-                  </div>
-                  <div className="text-[12px]" style={{ color: 'var(--gray-500)' }}>
-                    {upload.numPages}페이지 · {upload.uploadedAt.toLocaleTimeString('ko-KR')}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

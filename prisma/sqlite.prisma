@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/sqlite"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../dev.db"
+}
+
+model Company {
+  id                String           @id
+  name              String
+  businessNumber    String?
+  industry          String?
+  employeeCount     Int?
+  establishmentDate String?
+  revenue           String?
+  mainProduct       String?
+  location          String?
+  patentCount       Int?
+  researchCenter    Boolean          @default(false)
+  certifications    String?          // Comma separated values
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime
+  assessments       Assessment[]
+  projects          ProjectHistory[]
+}
+
+model ProjectHistory {
+  id          String   @id
+  companyId   String
+  projectName String
+  year        Int
+  role        String?
+  amount      String?
+  outcome     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Assessment {
+  id              String   @id
+  companyId       String
+  projectName     String
+  score           Int
+  suitability     String
+  reasoning       String
+  recommendations String?
+  createdAt       DateTime @default(now())
+  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
