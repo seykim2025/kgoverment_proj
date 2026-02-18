@@ -49,7 +49,6 @@ export default function CompanyForm() {
   const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string; visible: boolean } | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadCompanyData();
@@ -159,7 +158,6 @@ export default function CompanyForm() {
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setTouched(prev => ({ ...prev, [name]: true }));
     const error = validateField(name, value);
     if (error) {
       setErrors(prev => ({ ...prev, [name]: error }));
