@@ -83,33 +83,33 @@ export default function DashboardPage() {
     switch (light) {
       case 'GREEN':
         return {
-          dotColor: 'bg-[var(--green-500)]',
-          bgLight: 'bg-[var(--green-50)]',
-          text: 'text-[var(--green-700)]',
+          dotColor: 'bg-green-500',
+          bgLight: 'bg-green-50',
+          text: 'text-green-700',
           icon: CheckCircle2,
           label: '지원 추천'
         };
       case 'YELLOW':
         return {
-          dotColor: 'bg-[var(--amber-500)]',
-          bgLight: 'bg-[var(--amber-50)]',
-          text: 'text-[var(--amber-700)]',
+          dotColor: 'bg-amber-500',
+          bgLight: 'bg-amber-50',
+          text: 'text-amber-700',
           icon: AlertCircle,
           label: '보완 필요'
         };
       case 'RED':
         return {
-          dotColor: 'bg-[var(--red-500)]',
-          bgLight: 'bg-[var(--red-50)]',
-          text: 'text-[var(--red-700)]',
+          dotColor: 'bg-red-500',
+          bgLight: 'bg-red-50',
+          text: 'text-red-700',
           icon: XCircle,
           label: '지원 불가'
         };
       default:
         return {
-          dotColor: 'bg-[var(--gray-500)]',
-          bgLight: 'bg-[var(--gray-100)]',
-          text: 'text-[var(--gray-700)]',
+          dotColor: 'bg-gray-500',
+          bgLight: 'bg-gray-100',
+          text: 'text-gray-700',
           icon: AlertCircle,
           label: '미정'
         };
@@ -120,8 +120,8 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center py-32">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: 'var(--blue-500)' }} />
-          <p className="text-[14px] font-medium" style={{ color: 'var(--gray-600)' }}>데이터 불러오는 중...</p>
+          <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-blue-500" />
+          <p className="text-[14px] font-medium text-gray-600">데이터 불러오는 중...</p>
         </div>
       </div>
     );
@@ -129,36 +129,41 @@ export default function DashboardPage() {
 
   return (
     <div className="px-6 py-8 md:px-10 md:py-10 lg:px-14 lg:py-12 max-w-7xl mx-auto transition-all duration-300">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-[22px] font-bold" style={{ color: 'var(--gray-900)' }}>
-            대시보드
-          </h1>
-          <p className="text-[14px] mt-1" style={{ color: 'var(--gray-600)' }}>
-            AI 판단 결과를 한눈에 확인하세요
-          </p>
+      {/* Welcome Banner */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl p-8 mb-10 text-white shadow-2xl shadow-gray-200/50">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              안녕하세요, <span className="text-blue-400">김세용님</span> 👋
+            </h1>
+            <p className="text-gray-300 max-w-lg">
+              AI가 분석한 과제 수행 가능성을 확인하고, 합격 확률이 높은 공고를 놓치지 마세요.
+            </p>
+          </div>
+          <Link href="/assess" className="btn bg-white text-gray-900 hover:bg-blue-50 border-none shadow-lg hover:shadow-xl hover:-translate-y-1 px-6 py-3 h-auto text-[15px]">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            새 분석 시작하기
+          </Link>
         </div>
-        <Link href="/assess" className="btn btn-primary">
-          <Sparkles className="w-4 h-4" />
-          새 분석 시작
-        </Link>
+
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       </div>
 
       {/* Empty State */}
       {assessments.length === 0 ? (
-        <div className="card p-16 text-center">
-          <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: 'var(--gray-100)' }}>
-            <FileSearch className="w-10 h-10" style={{ color: 'var(--gray-400)' }} />
+        <div className="card p-20 text-center border-dashed border-2 border-gray-200 bg-gray-50/50">
+          <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 bg-white shadow-lg shadow-gray-100">
+            <FileSearch className="w-10 h-10 text-blue-500" />
           </div>
-          <h3 className="text-[18px] font-bold mb-2" style={{ color: 'var(--gray-900)' }}>
+          <h3 className="text-xl font-bold mb-3 text-gray-900">
             아직 분석 이력이 없습니다
           </h3>
-          <p className="text-[14px] mb-8 max-w-sm mx-auto" style={{ color: 'var(--gray-600)' }}>
-            과제 공고문을 업로드하고 AI 분석을 실행하면
-            여기에 결과가 표시됩니다.
+          <p className="text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">
+            관심 있는 정부과제 공고문을 업로드해보세요.<br />AI가 핵심 내용을 분석하고 적합성을 판단해드립니다.
           </p>
-          <Link href="/assess" className="btn btn-primary btn-lg">
+          <Link href="/assess" className="btn btn-primary btn-lg shadow-blue-500/30">
             <TrendingUp className="w-5 h-5" />
             첫 과제 분석하기
             <ArrowRight className="w-5 h-5" />
@@ -167,103 +172,118 @@ export default function DashboardPage() {
       ) : (
         <>
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             {/* Total */}
-            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-blue-100/50">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--blue-50)' }}>
-                  <BarChart3 className="w-5 h-5" style={{ color: 'var(--blue-500)' }} />
+            <div className="card p-6 relative overflow-hidden group hover:border-blue-200 bg-white">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="w-6 h-6" />
+                  </div>
+                  <span className="badge bg-blue-50 text-blue-600 border border-blue-100 px-2.5 py-1">전체</span>
                 </div>
-                <span className="badge badge-info">전체</span>
+                <p className="text-3xl font-bold text-gray-900 mb-1">{stats.total}</p>
+                <p className="text-sm text-gray-500 font-medium">총 분석 건수</p>
               </div>
-              <p className="text-[28px] font-bold" style={{ color: 'var(--gray-900)' }}>{stats.total}</p>
-              <p className="text-[13px]" style={{ color: 'var(--gray-600)' }}>총 분석 건수</p>
             </div>
 
             {/* Green */}
-            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-green-100/50">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--green-50)' }}>
-                  <CheckCircle2 className="w-5 h-5" style={{ color: 'var(--green-500)' }} />
+            <div className="card p-6 relative overflow-hidden group hover:border-green-200 bg-white">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-green-50 rounded-full blur-2xl group-hover:bg-green-100 transition-colors" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-50 text-green-600 group-hover:scale-110 transition-transform duration-300">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <span className="badge bg-green-50 text-green-600 border border-green-100 px-2.5 py-1">{getPercentage(stats.green, stats.total)}%</span>
                 </div>
-                <span className="badge badge-success">{getPercentage(stats.green, stats.total)}%</span>
+                <p className="text-3xl font-bold text-gray-900 mb-1">{stats.green}</p>
+                <p className="text-sm text-gray-500 font-medium">지원 추천</p>
               </div>
-              <p className="text-[28px] font-bold" style={{ color: 'var(--green-500)' }}>{stats.green}</p>
-              <p className="text-[13px]" style={{ color: 'var(--gray-600)' }}>지원 추천</p>
             </div>
 
             {/* Yellow */}
-            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-amber-100/50">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--amber-50)' }}>
-                  <AlertCircle className="w-5 h-5" style={{ color: 'var(--amber-500)' }} />
+            <div className="card p-6 relative overflow-hidden group hover:border-amber-200 bg-white">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-50 rounded-full blur-2xl group-hover:bg-amber-100 transition-colors" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 group-hover:scale-110 transition-transform duration-300">
+                    <AlertCircle className="w-6 h-6" />
+                  </div>
+                  <span className="badge bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1">{getPercentage(stats.yellow, stats.total)}%</span>
                 </div>
-                <span className="badge badge-warning">{getPercentage(stats.yellow, stats.total)}%</span>
+                <p className="text-3xl font-bold text-gray-900 mb-1">{stats.yellow}</p>
+                <p className="text-sm text-gray-500 font-medium">보완 필요</p>
               </div>
-              <p className="text-[28px] font-bold" style={{ color: 'var(--amber-500)' }}>{stats.yellow}</p>
-              <p className="text-[13px]" style={{ color: 'var(--gray-600)' }}>보완 필요</p>
             </div>
 
             {/* Red */}
-            <div className="card p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-red-100/50">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--red-50)' }}>
-                  <XCircle className="w-5 h-5" style={{ color: 'var(--red-500)' }} />
+            <div className="card p-6 relative overflow-hidden group hover:border-red-200 bg-white">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-red-50 rounded-full blur-2xl group-hover:bg-red-100 transition-colors" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-red-50 text-red-600 group-hover:scale-110 transition-transform duration-300">
+                    <XCircle className="w-6 h-6" />
+                  </div>
+                  <span className="badge bg-red-50 text-red-600 border border-red-100 px-2.5 py-1">{getPercentage(stats.red, stats.total)}%</span>
                 </div>
-                <span className="badge badge-error">{getPercentage(stats.red, stats.total)}%</span>
+                <p className="text-3xl font-bold text-gray-900 mb-1">{stats.red}</p>
+                <p className="text-sm text-gray-500 font-medium">지원 불가</p>
               </div>
-              <p className="text-[28px] font-bold" style={{ color: 'var(--red-500)' }}>{stats.red}</p>
-              <p className="text-[13px]" style={{ color: 'var(--gray-600)' }}>지원 불가</p>
             </div>
           </div>
 
           {/* Chart + Ranking */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             {/* Donut Chart */}
-            <div className="card p-6">
-              <h3 className="text-[15px] font-bold mb-5 flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-                <Target className="w-4 h-4" style={{ color: 'var(--gray-500)' }} />
+            <div className="card p-8 flex flex-col items-center justify-center min-h-[400px]">
+              <h3 className="text-lg font-bold mb-8 flex items-center gap-2 text-gray-900 self-start w-full">
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+                  <Target className="w-4 h-4 text-gray-600" />
+                </div>
                 판정 결과 분포
               </h3>
 
-              <div className="flex items-center justify-center mb-6">
-                <div className="relative w-44 h-44">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--gray-100)" strokeWidth="12" />
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--green-500)" strokeWidth="12"
-                      strokeDasharray={`${getPercentage(stats.green, stats.total) * 2.51} 251`}
-                      strokeDashoffset="0"
-                      className="transition-all duration-500" />
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--amber-500)" strokeWidth="12"
-                      strokeDasharray={`${getPercentage(stats.yellow, stats.total) * 2.51} 251`}
-                      strokeDashoffset={`${-getPercentage(stats.green, stats.total) * 2.51}`}
-                      className="transition-all duration-500" />
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--red-500)" strokeWidth="12"
-                      strokeDasharray={`${getPercentage(stats.red, stats.total) * 2.51} 251`}
-                      strokeDashoffset={`${-(getPercentage(stats.green, stats.total) + getPercentage(stats.yellow, stats.total)) * 2.51}`}
-                      className="transition-all duration-500" />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className="text-[26px] font-bold" style={{ color: 'var(--gray-900)' }}>{stats.total}</p>
-                    <p className="text-[12px]" style={{ color: 'var(--gray-500)' }}>총 분석</p>
-                  </div>
+              <div className="relative w-64 h-64 mb-10">
+                <svg className="w-full h-full transform -rotate-90 drop-shadow-xl" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#F1F3F5" strokeWidth="12" strokeLinecap="round" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#40C057" strokeWidth="12"
+                    strokeDasharray={`${getPercentage(stats.green, stats.total) * 2.51} 251`}
+                    strokeDashoffset="0"
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#FAB005" strokeWidth="12"
+                    strokeDasharray={`${getPercentage(stats.yellow, stats.total) * 2.51} 251`}
+                    strokeDashoffset={`${-getPercentage(stats.green, stats.total) * 2.51}`}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#FA5252" strokeWidth="12"
+                    strokeDasharray={`${getPercentage(stats.red, stats.total) * 2.51} 251`}
+                    strokeDashoffset={`${-(getPercentage(stats.green, stats.total) + getPercentage(stats.yellow, stats.total)) * 2.51}`}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out" />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-4xl font-extrabold text-gray-900 tracking-tight">{stats.total}</p>
+                  <p className="text-sm font-medium text-gray-500 mt-1">TOTAL</p>
                 </div>
               </div>
 
               {/* Legend */}
-              <div className="space-y-2.5">
+              <div className="flex items-center gap-6 w-full justify-center">
                 {[
-                  { label: '지원 추천', count: stats.green, color: 'var(--green-500)' },
-                  { label: '보완 필요', count: stats.yellow, color: 'var(--amber-500)' },
-                  { label: '지원 불가', count: stats.red, color: 'var(--red-500)' },
+                  { label: '지원 추천', count: stats.green, color: 'bg-green-500' },
+                  { label: '보완 필요', count: stats.yellow, color: 'bg-amber-500' },
+                  { label: '지원 불가', count: stats.red, color: 'bg-red-500' },
                 ].map(item => (
-                  <div key={item.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                      <span className="text-[13px]" style={{ color: 'var(--gray-700)' }}>{item.label}</span>
+                  <div key={item.label} className="flex flex-col items-center gap-1 group cursor-default">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className={`w-3 h-3 rounded-full ${item.color} shadow-sm group-hover:scale-125 transition-transform`} />
+                      <span className="text-sm text-gray-600 font-medium">{item.label}</span>
                     </div>
-                    <span className="text-[13px] font-semibold" style={{ color: 'var(--gray-900)' }}>
-                      {item.count}건 ({getPercentage(item.count, stats.total)}%)
+                    <span className="text-lg font-bold text-gray-900">
+                      {item.count}
                     </span>
                   </div>
                 ))}
@@ -271,38 +291,45 @@ export default function DashboardPage() {
             </div>
 
             {/* Top 5 Ranking */}
-            <div className="card p-6">
-              <h3 className="text-[15px] font-bold mb-5 flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-                <Award className="w-4 h-4" style={{ color: 'var(--gray-500)' }} />
+            <div className="card p-8 min-h-[400px]">
+              <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-gray-900">
+                <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+                  <Award className="w-4 h-4 text-amber-500" />
+                </div>
                 기술 적합성 TOP 5
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {assessments
                   .sort((a, b) => (b.qualitativeRelevanceScore || 0) - (a.qualitativeRelevanceScore || 0))
                   .slice(0, 5)
                   .map((assessment, idx) => (
-                    <div key={assessment.id} className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-[12px]"
-                        style={{
-                          backgroundColor: idx === 0 ? 'var(--amber-50)' : idx === 1 ? 'var(--gray-100)' : idx === 2 ? 'var(--amber-50)' : 'var(--gray-50)',
-                          color: idx === 0 ? 'var(--amber-600)' : 'var(--gray-600)',
-                        }}>
-                        {idx + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium truncate" style={{ color: 'var(--gray-900)' }}>
-                          {assessment.noticeTitle}
-                        </p>
-                        <div className="mt-1.5 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--gray-100)' }}>
-                          <div className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${assessment.qualitativeRelevanceScore || 0}%`, backgroundColor: 'var(--blue-500)' }} />
+                    <div key={assessment.id} className="group cursor-pointer">
+                      <div className="flex items-center gap-4 mb-2">
+                        <div className={`
+                          w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shadow-sm transition-transform group-hover:scale-110
+                          ${idx === 0 ? 'bg-amber-100 text-amber-700' :
+                            idx === 1 ? 'bg-gray-100 text-gray-700' :
+                              idx === 2 ? 'bg-amber-50 text-amber-600' : 'bg-gray-50 text-gray-500'}
+                        `}>
+                          {idx + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                            {assessment.noticeTitle}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-lg font-bold text-blue-600">
+                            {assessment.qualitativeRelevanceScore || 0}
+                          </span>
+                          <span className="text-xs text-gray-500 ml-1">점</span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[16px] font-bold" style={{ color: 'var(--blue-500)' }}>
-                          {assessment.qualitativeRelevanceScore || 0}
-                        </p>
-                        <p className="text-[11px]" style={{ color: 'var(--gray-500)' }}>점</p>
+                      <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400 group-hover:from-blue-600 group-hover:to-blue-500 transition-all duration-500 ease-out"
+                          style={{ width: `${assessment.qualitativeRelevanceScore || 0}%` }}
+                        />
                       </div>
                     </div>
                   ))}
@@ -311,18 +338,20 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Assessments */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-[15px] font-bold flex items-center gap-2" style={{ color: 'var(--gray-900)' }}>
-                <FileSearch className="w-4 h-4" style={{ color: 'var(--gray-500)' }} />
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold flex items-center gap-2 text-gray-900">
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+                  <FileSearch className="w-4 h-4 text-gray-600" />
+                </div>
                 최근 분석 결과
               </h3>
-              <span className="text-[13px]" style={{ color: 'var(--gray-500)' }}>
-                총 {assessments.length}건
-              </span>
+              <Link href="/history" className="btn btn-ghost text-sm font-medium hover:bg-gray-100 px-3 py-1.5 h-auto rounded-lg">
+                전체보기 <ArrowRight className="w-4 h-4 ml-1" />
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {assessments.slice(0, 6).map((assessment, idx) => {
                 const config = getTrafficLightConfig(assessment.trafficLight);
                 const Icon = config.icon;
@@ -330,63 +359,53 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={assessment.id}
-                    className="card overflow-hidden hover:-translate-y-0.5 transition-all duration-200 animate-fade-in"
-                    style={{ animationDelay: `${idx * 40}ms` }}
+                    className="card group hover:-translate-y-1 transition-all duration-300 animate-fade-in-up bg-white border border-gray-100 hover:border-blue-200 hover:shadow-xl"
+                    style={{ animationDelay: `${idx * 100}ms` }}
                   >
-                    <div className={`h-1 ${config.dotColor}`} />
+                    <div className={`h-1.5 w-full ${config.dotColor}`} />
 
-                    <div className="p-5">
-                      <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold mb-3 ${config.bgLight} ${config.text}`}>
-                        <Icon className="w-3 h-3" />
-                        {config.label}
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${config.bgLight} ${config.text}`}>
+                          <Icon className="w-3.5 h-3.5" />
+                          {config.label}
+                        </div>
+                        <span className="text-xs text-gray-400 font-medium flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md">
+                          <Calendar className="w-3 h-3" />
+                          {formatDate(assessment.createdAt)}
+                        </span>
                       </div>
 
-                      <h4 className="text-[14px] font-semibold mb-2 line-clamp-2" style={{ color: 'var(--gray-900)' }}>
+                      <h4 className="text-[15px] font-bold mb-3 line-clamp-2 text-gray-900 group-hover:text-blue-600 transition-colors h-11">
                         {assessment.noticeTitle}
                       </h4>
 
                       {assessment.summary && (
-                        <p className="text-[13px] line-clamp-2 mb-4" style={{ color: 'var(--gray-600)' }}>
+                        <p className="text-sm text-gray-500 line-clamp-2 mb-5 leading-relaxed h-10">
                           {assessment.summary}
                         </p>
                       )}
 
                       {assessment.qualitativeRelevanceScore !== null && (
-                        <div className="mb-4">
-                          <div className="flex justify-between text-[11px] mb-1">
-                            <span style={{ color: 'var(--gray-500)' }}>기술 적합성</span>
-                            <span className="font-semibold" style={{ color: 'var(--blue-500)' }}>
+                        <div className="pt-4 border-t border-gray-50">
+                          <div className="flex justify-between items-center text-xs mb-2">
+                            <span className="text-gray-500 font-medium">기술 적합성</span>
+                            <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
                               {assessment.qualitativeRelevanceScore}점
                             </span>
                           </div>
-                          <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--gray-100)' }}>
-                            <div className="h-full rounded-full"
-                              style={{ width: `${assessment.qualitativeRelevanceScore}%`, backgroundColor: 'var(--blue-500)' }} />
+                          <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                            <div className="h-full rounded-full bg-blue-500"
+                              style={{ width: `${assessment.qualitativeRelevanceScore}%` }} />
                           </div>
                         </div>
                       )}
-
-                      <div className="flex items-center gap-3 text-[11px] pt-3" style={{ borderTop: '1px solid var(--gray-100)', color: 'var(--gray-500)' }}>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {formatDate(assessment.createdAt)}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
-
-          {assessments.length > 6 && (
-            <div className="text-center">
-              <button className="btn btn-ghost">
-                더 많은 분석 결과 보기 ({assessments.length - 6}건 더)
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
         </>
       )}
     </div>

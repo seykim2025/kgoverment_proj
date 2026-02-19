@@ -53,12 +53,15 @@ export default function Sidebar() {
   const nav = (
     <>
       {/* Logo */}
-      <div className="h-16 flex items-center gap-3 px-6 border-b border-gray-100">
+      <div className="h-20 flex items-center gap-3 px-6">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center shadow-toss-sm group-hover:scale-105 transition-transform duration-200">
-            <FileSearch className="w-4.5 h-4.5 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
+            <FileSearch className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-[16px] text-gray-900 tracking-tight group-hover:text-primary-600 transition-colors">과제판단</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-[18px] text-gray-900 tracking-tight leading-none group-hover:text-blue-600 transition-colors">과제판단</span>
+            <span className="text-[10px] font-semibold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded-md self-start mt-1">BETA</span>
+          </div>
         </Link>
       </div>
 
@@ -72,14 +75,15 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className={`
-                flex items-center gap-3 px-3.5 py-3 rounded-xl text-[15px] font-medium transition-all duration-200 group
+                flex items-center gap-3 px-4 py-3.5 mx-3 rounded-xl text-[15px] font-medium transition-all duration-200 group relative overflow-hidden
                 ${active
-                  ? 'bg-primary-50 text-primary-600 shadow-sm'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-blue-50 text-blue-700 shadow-sm'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                 }
               `}
             >
-              <Icon className={`w-5 h-5 transition-colors ${active ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-600'}`} />
+              {active && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-500 rounded-r-full" />}
+              <Icon className={`w-5 h-5 transition-colors ${active ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
               {item.label}
             </Link>
           );
